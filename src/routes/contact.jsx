@@ -1,15 +1,14 @@
-import { Form } from "react-router-dom";
+import { Form, useLoaderData } from "react-router-dom";
 import { FaStar, FaRegStar } from "react-icons/fa";
+import { getContact } from "../contacts";
+
+export async function Loader({ params }){
+    const contact = getContact(params.contactId);
+    return { contact };
+}
 
 export default function Contact(){
-    const contact = {
-        first: 'First',
-        last: 'Last',
-        avatar: "https://robohash.org/you.png?size=200x200",
-        twitter: "your_handle",
-        notes: 'some notes',
-        favorites: true
-    }
+    const contact = useLoaderData();
 
     return(
         <div>
@@ -45,10 +44,10 @@ export default function Contact(){
                 {contact.notes && <p>{contact.notes}</p>}
 
                 <div>
-                    <form action="edit">
+                    <Form action="edit">
                         <button type="submit">Edit</button>
-                    </form>
-                    <form 
+                    </Form>
+                    <Form 
                         method="post"
                         action="destroy"
                         onSubmit={(event)=>{
@@ -57,7 +56,7 @@ export default function Contact(){
                             }
                         }}>
                         <button type="submit">Delete</button>
-                    </form>
+                    </Form>
                 </div>
             </div>
         </div>

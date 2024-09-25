@@ -1,7 +1,21 @@
-import { FaSearch } from "react-icons/fa"
+import { Outlet, Link, useLoaderData, Form } from "react-router-dom"
+import { FaSearch, FaStar } from "react-icons/fa"
 import { FaMessage } from "react-icons/fa6"
+import { getContacts, createContact } from "../contacts"
+
+export async function action() {
+    const contact = await createContact();
+    return { contact };
+}
+
+export async function Loader(){
+    const contacts = await getContacts();
+    return { contacts };
+}
 
 export default function Root(){
+    const { contacts } = useLoaderData();
+
     return(
         <div className="grid grid-cols-12 gap-3 h-screen">
             <div className="relative col-span-3 w-full h-full bg-red-100">
@@ -16,18 +30,37 @@ export default function Root(){
                         <input type="search" name="name" className="w-full pl-6" />
                         <span className="absolute left-3 top-3"><FaSearch /></span>
                     </form>
-                    <form method="post" className="bg-white ml-2 rounded-sm">
+                    <Form method="post" className="bg-white ml-2 rounded-sm">
                         <button type="submit" className="ml-3 mr-3">New</button>
-                    </form>
+                    </Form>
                 </div>
                 <div>
-                    <ul>
-                        <li><a href={'/contacts/1'}>Your Name</a></li>
-                        <li><a href={'/contacts/2'}>Your Friend</a></li>
-                    </ul>
+                    {contacts.length?(
+                        <ul>
+                            { contacts.map((contact)=>(
+                                <li key={contact.id}>
+                                    <Link to={`contacts/${contact.id}`}>
+                                        { contact.first || contact.last ? (
+                                            <>
+                                                {contact.first} {contact.last}
+                                            </>
+                                        ):(
+                                            <i>No Name</i>
+                                        )}{""}
+                                        {contact.favorite && <FaStar/>}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>):(
+                            <p>
+                                <i>No Contacts</i>
+                            </p>
+                        )}
                 </div>
             </div>
-            <div className="col-span-auto"></div>
+            <div className="col-span-auto">
+                <Outlet/>
+            </div>
         </div>
     )
 }
