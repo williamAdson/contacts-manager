@@ -3,15 +3,15 @@ import { FaStar, FaRegStar } from "react-icons/fa";
 import { getContact } from "../contacts";
 
 export async function Loader({ params }){
-    const contact = getContact(params.contactId);
+    const contact = await getContact(params.contactId);
     return { contact };
 }
 
 export default function Contact(){
-    const contact = useLoaderData();
+    const { contact } = useLoaderData();
 
     return(
-        <div>
+        <div className="flex flex-row border-2 m-2 p-2 rounded md: min-w-[300px]">
             <div>
                 <img 
                     key={contact.avatar} 
@@ -43,9 +43,9 @@ export default function Contact(){
 
                 {contact.notes && <p>{contact.notes}</p>}
 
-                <div>
+                <div className="flex justify-center items-center gap-3">
                     <Form action="edit">
-                        <button type="submit">Edit</button>
+                        <button type="submit" className="text-green-500 shadow-xl border-2 p-2 mb-3 rounded">Edit</button>
                     </Form>
                     <Form 
                         method="post"
@@ -55,7 +55,8 @@ export default function Contact(){
                                 event.preventDefault();
                             }
                         }}>
-                        <button type="submit">Delete</button>
+                        <button type="submit" className="text-gray-500 shadow-xl border-2 p-2 mb-3 rounded">Delete</button>
+                         
                     </Form>
                 </div>
             </div>

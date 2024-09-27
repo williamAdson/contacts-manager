@@ -1,11 +1,11 @@
-import { Outlet, Link, useLoaderData, Form } from "react-router-dom"
+import { Outlet, Link, useLoaderData, Form, redirect, NavLink } from "react-router-dom"
 import { FaSearch, FaStar } from "react-icons/fa"
 import { FaMessage } from "react-icons/fa6"
 import { getContacts, createContact } from "../contacts"
 
 export async function action() {
     const contact = await createContact();
-    return { contact };
+    return redirect(`/contacts/${contact.id}/edit`);
 }
 
 export async function Loader(){
@@ -38,8 +38,10 @@ export default function Root(){
                     {contacts.length?(
                         <ul>
                             { contacts.map((contact)=>(
-                                <li key={contact.id}>
-                                    <Link to={`contacts/${contact.id}`}>
+                                <li key={contact.id} className="relative capitalize p-2 ml-3">
+                                    <NavLink 
+                                        to={`contacts/${contact.id}`} 
+                                        className={({isActive, isPending})=>isActive? "bg-green-500 w-full" : isPending? "pending w-full": ""}>
                                         { contact.first || contact.last ? (
                                             <>
                                                 {contact.first} {contact.last}
@@ -48,7 +50,7 @@ export default function Root(){
                                             <i>No Name</i>
                                         )}{""}
                                         {contact.favorite && <FaStar/>}
-                                    </Link>
+                                    </NavLink>
                                 </li>
                             ))}
                         </ul>):(
